@@ -1,6 +1,6 @@
 const Filter = require('./badwords/badwords');
 const Discord = require('discord.js');
-const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES] });
+const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
 const fs = require('fs');
 
 var context = {
@@ -188,6 +188,8 @@ function getJudge() {
 }
 
 function showNextRound(winner = null) {
+    if (!context.game) return
+    
     context.game.players.forEach(player => {
         if (player.points == 10) {
             context.game.joinMsg.channel.send(player.user.username + " is the winner!")
@@ -203,12 +205,12 @@ function showNextRound(winner = null) {
     context.game.currentBlack = blackCard
     context.game.players.forEach(p => resetPlayerForRound(p)) // Clear all judges
     
-    // Handle Judge
-    if (winner) {
-        context.game.players[context.game.players.indexOf(winner)].isJudge = true
-    } else {
-        context.game.players[Math.floor(Math.random()*context.game.players.length)].isJudge = true
-    }
+
+    if (!winner) {
+        context.game.judgeIndex = Math.floor(Math.random() * context.game.players.length)
+    } 
+    
+    context.game.players[context.game.judgeIndex].isJudge = true
     
     // Create Embed
     var roundEmbed = JSON.parse(JSON.stringify(roundEmbedTemplate))
@@ -419,7 +421,7 @@ client.on("message", msg => {
                   }
                 ]
               };
-              msg.channel.send({ embed });
+              msg.channel.send({ embed: embed });
         }
     }
 })

@@ -13,7 +13,7 @@ var context = {
 
 var filter = new Filter()
 
-const MIN_PLAYERS = 3
+const MIN_PLAYERS = 2
 
 const selectionEmojis = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱', '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿']
 
@@ -206,9 +206,9 @@ function showNextRound(winner = null) {
     context.game.players.forEach(p => resetPlayerForRound(p)) // Clear all judges
     
 
-    if (!winner) {
-        context.game.judgeIndex = Math.floor(Math.random() * context.game.players.length)
-    } 
+    
+    context.game.judgeIndex = Math.floor(Math.random() * context.game.players.length)
+    
     
     context.game.players[context.game.judgeIndex].isJudge = true
     
